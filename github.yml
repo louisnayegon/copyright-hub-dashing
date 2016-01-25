@@ -1,0 +1,18 @@
+repositories:
+  - CDECatapult/copyright-hub-accounts-srv
+  - CDECatapult/copyright-hub-authentication-srv
+  - CDECatapult/copyright-hub-identity-srv
+  - CDECatapult/copyright-hub-index-srv
+  - CDECatapult/copyright-hub-onboarding-srv
+  - CDECatapult/copyright-hub-query-srv
+  - CDECatapult/copyright-hub-repository-srv
+  - CDECatapult/copyright-hub-resolution-srv
+  - CDECatapult/copyright-hub-template-srv
+  - CDECatapult/copyright-hub-transformation-srv
+  - CDECatapult/copyright-hub-docroot
+  - CDECatapult/copyright-hub-support-docs
+  - CDECatapult/copyright-hub-api
+  - CDECatapult/copyright-hub-manifest
+
+login:
+password:
