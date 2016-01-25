@@ -1,0 +1,20 @@
+<h1 class="title" data-bind="title"></h1>
+<div class="main">
+  <table>
+    <thead class="header">
+      <tr data-foreach-hrow="hrows" data-bind-class="hrow.class">
+        <th data-foreach-col="hrow.cols" data-bind-colspan="col.colspan" data-bind-rowspan="col.rowspan" data-bind-class="col.class">
+          <div data-bind-class="col.class" data-bind="col.value"></div>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="body">
+      <tr data-foreach-row="rows" data-bind-class="row.class">
+        <td data-foreach-col="row.cols" data-bind-colspan="col.colspan" data-bind-rowspan="col.rowspan" data-bind-class="col.class">
+          <div data-bind-class="col.class" data-bind="col.value"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

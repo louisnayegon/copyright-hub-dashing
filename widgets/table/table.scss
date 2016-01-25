@@ -1,0 +1,97 @@
+// ----------------------------------------------------------------------------
+// Sass declarations
+// ----------------------------------------------------------------------------
+$background-color:  #ffffff;
+$title-color: #ffffff;
+$title-background-color: #000000;
+$main-color: #000000;
+$main-background-color: #00ffff;
+$header-color: #ffffff;
+$header-background-color: #008888;
+$body-color: #000000;
+$body-background-color: #00ffff;
+$odd-row-color: #000000;
+$odd-row-background-color: #00ffff;
+$even-row-color: #000000;
+$even-row-background-color: #ffffff;
+$brag-cell-black-color: #ffffff;
+$brag-cell-black-background-color: #000000;
+$brag-cell-red-color: #000000;
+$brag-cell-red-background-color: #ff0000;
+$brag-cell-amber-color: #000000;
+$brag-cell-amber-background-color: #ffbf00;
+$brag-cell-green-color: #000000;
+$brag-cell-green-background-color: #00ffff;
+
+.widget-table {
+  vertical-align: text-top;
+  background-color: $background-color;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  line-height: 1em;
+
+  .title {
+    color: $title-color;
+    background-color: $title-background-color;
+    padding: 10px;
+    font-size: 1.5em;
+    .repo_name {
+      font-weight: bolder;
+    }
+  }
+
+  .main {
+    color: $main-color;
+    background-color: $main-background-color;
+    text-align: left;
+  }
+
+  .header {
+    color: $header-color;
+    background-color: $header-background-color;
+    text-align: left;
+  }
+
+  .body {
+    color: $body-color;
+    background-color: $body-background-color;
+    text-align: left;
+  }
+
+  .odd-row {
+    color: $odd-row-color;
+    background-color: $odd-row-background-color;
+    text-align: left;
+  }
+
+  .even-row {
+    color: $even-row-color;
+    background-color: $even-row-background-color;
+    text-align: left;
+  }
+
+  .brag-cell-black {
+    color: $brag-cell-black-color;
+    background-color: $brag-cell-black-background-color;
+    text-align: left;
+  }
+
+  .brag-cell-red {
+    color: $brag-cell-red-color;
+    background-color: $brag-cell-red-background-color;
+    text-align: left;
+  }
+
+  .brag-cell-amber {
+    color: $brag-cell-amber-color;
+    background-color: $brag-cell-amber-background-color;
+    text-align: left;
+  }
+
+  .brag-cell-green {
+    color: $brag-cell-green-color;
+    background-color: $brag-cell-green-background-color;
+    text-align: left;
+  }
+}
