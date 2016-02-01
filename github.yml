@@ -24,10 +24,13 @@ components:
   - repo_name: CDECatapult/copyright-hub-support-docs
     s3_location: copyrighthub-artifacts/documents/support
   - repo_name: CDECatapult/copyright-hub-api
+    s3_location: copyrighthub-artifacts/tests/api
   - repo_name: CDECatapult/copyright-hub-manifest
     s3_location: copyrighthub-artifacts/platform
 
-manifest: CDECatapult/copyright-hub-manifest
+manifest:
+  repo_name: CDECatapult/copyright-hub-manifest
+  file_name: manifest.json
 
 refresh: 5m
 

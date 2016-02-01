@@ -1,9 +1,15 @@
 require 'octokit'
 require 'aws-sdk'
+require 'json'
 
-CONFIG        = YAML::load_file('github.yml')
-GITHUB_CONFIG = CONFIG['github']
-AWS_CONFIG    = CONFIG['aws']
+CONFIG          = YAML::load_file('github.yml')
+GITHUB_CONFIG   = CONFIG['github']
+AWS_CONFIG      = CONFIG['aws']
+MANIFEST_CONFIG = CONFIG['manifest']
+
+SERVICE_TO_PART = {
+  'repository' => 'repository1'
+}
 
 HEADERS = [
   {
@@ -23,11 +29,16 @@ HEADERS = [
         rowspan: 1,
         value: 'Last Tag'
       },
-       {
-         colspan: 1,
-         rowspan: 1,
-         value: 'Last Deploy'
-       }
+      {
+        colspan: 1,
+        rowspan: 1,
+        value: 'Last Deploy'
+      },
+      {
+        colspan: 1,
+        rowspan: 1,
+        value: 'Manifest'
+      }
     ]
   }
 ]
@@ -64,6 +75,12 @@ def aws_info(s3_client, s3_location)
 end
 
 
+def read_manifest(github_client, repo_name, file_name)
+  content = github_client.contents(repo_name, :path => file_name)[:content]
+  return JSON.parse(Base64.decode64(content))
+end
+
+
 SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
   github_client = Octokit::Client.new(
                     :login => GITHUB_CONFIG['login'],
@@ -74,15 +91,24 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
   rows = []
   odd_row = true
 
+  manifest = read_manifest(github_client, MANIFEST_CONFIG['repo_name'], MANIFEST_CONFIG['file_name'])
+
   CONFIG['components'].each do |component|
     repo_name = component['repo_name']
     latest_release, latest_tag, master_sha, release_sha, tag_sha = github_info(github_client, repo_name)
 
-    if component.has_key?('s3_location')
-      s3_location = component['s3_location']
-      last_deploy = aws_info(s3_client, s3_location)
-    else
-      last_deploy = ''
+    s3_location = component['s3_location']
+    location_split = s3_location.split('/')
+    last_deploy = aws_info(s3_client, s3_location)
+
+    manifest_version = ''
+
+    part = location_split[2]
+    if SERVICE_TO_PART.has_key?(part)
+      part = SERVICE_TO_PART[part]
+    end
+    if manifest.key?(location_split[1])
+      manifest_version = manifest[location_split[1]][part]['version']
     end
 
     row_class = odd_row ? 'odd-row' : 'even-row'
@@ -112,6 +138,12 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
               rowspan: 1,
               value: last_deploy,
               class: (last_deploy!=latest_release.tag_name) && (not last_deploy.empty?) ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
+              value: manifest_version,
+              class: ((manifest_version!=latest_release.tag_name) && (repo_name!=MANIFEST_CONFIG['repo_name'])) ? 'brag-cell-amber' : row_class
             }
           ]
         },
@@ -134,6 +166,11 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
               rowspan: 1,
               value: tag_sha,
               class: master_sha!=tag_sha ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
+              value: ''
             },
             {
               colspan: 1,
