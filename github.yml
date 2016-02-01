@@ -1,18 +1,39 @@
-repositories:
-  - CDECatapult/copyright-hub-accounts-srv
-  - CDECatapult/copyright-hub-authentication-srv
-  - CDECatapult/copyright-hub-identity-srv
-  - CDECatapult/copyright-hub-index-srv
-  - CDECatapult/copyright-hub-onboarding-srv
-  - CDECatapult/copyright-hub-query-srv
-  - CDECatapult/copyright-hub-repository-srv
-  - CDECatapult/copyright-hub-resolution-srv
-  - CDECatapult/copyright-hub-template-srv
-  - CDECatapult/copyright-hub-transformation-srv
-  - CDECatapult/copyright-hub-docroot
-  - CDECatapult/copyright-hub-support-docs
-  - CDECatapult/copyright-hub-api
-  - CDECatapult/copyright-hub-manifest
+components:
+  - repo_name: CDECatapult/copyright-hub-accounts-srv
+    s3_location: copyrighthub-artifacts/services/accounts
+  - repo_name: CDECatapult/copyright-hub-authentication-srv
+    s3_location: copyrighthub-artifacts/services/authentication
+  - repo_name: CDECatapult/copyright-hub-identity-srv
+    s3_location: copyrighthub-artifacts/services/identity
+  - repo_name: CDECatapult/copyright-hub-index-srv
+    s3_location: copyrighthub-artifacts/services/index
+  - repo_name: CDECatapult/copyright-hub-onboarding-srv
+    s3_location: copyrighthub-artifacts/services/onboarding
+  - repo_name: CDECatapult/copyright-hub-query-srv
+    s3_location: copyrighthub-artifacts/services/query
+  - repo_name: CDECatapult/copyright-hub-repository-srv
+    s3_location: copyrighthub-artifacts/services/repository
+  - repo_name: CDECatapult/copyright-hub-resolution-srv
+    s3_location: copyrighthub-artifacts/services/resolution
+  - repo_name: CDECatapult/copyright-hub-template-srv
+    s3_location: copyrighthub-artifacts/services/template
+  - repo_name: CDECatapult/copyright-hub-transformation-srv
+    s3_location: copyrighthub-artifacts/services/transformation
+  - repo_name: CDECatapult/copyright-hub-docroot
+    s3_location: copyrighthub-artifacts/documents/docroot
+  - repo_name: CDECatapult/copyright-hub-support-docs
+    s3_location: copyrighthub-artifacts/documents/support
+  - repo_name: CDECatapult/copyright-hub-api
+  - repo_name: CDECatapult/copyright-hub-manifest
+    s3_location: copyrighthub-artifacts/platform
 
-login:
-password:
+manifest: CDECatapult/copyright-hub-manifest
+
+refresh: 5m
+
+github:
+  login:
+  password:
+
+aws:
+  region: eu-west-1

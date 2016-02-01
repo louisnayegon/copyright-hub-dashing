@@ -1,14 +1,17 @@
 require 'octokit'
+require 'aws-sdk'
 
-config = YAML::load_file('github.yml')
+CONFIG        = YAML::load_file('github.yml')
+GITHUB_CONFIG = CONFIG['github']
+AWS_CONFIG    = CONFIG['aws']
 
-headers = [
+HEADERS = [
   {
     cols: [
       {
         colspan: 1,
         rowspan: 1,
-        value: 'Name'
+        value: 'Repository Name'
       },
       {
         colspan: 1,
@@ -19,32 +22,71 @@ headers = [
         colspan: 1,
         rowspan: 1,
         value: 'Last Tag'
-      }
+      },
+       {
+         colspan: 1,
+         rowspan: 1,
+         value: 'Last Deploy'
+       }
     ]
   }
 ]
 
 last_rows = []
 
-SCHEDULER.every '1m', :first_in => 0 do |job|
-  client = Octokit::Client.new(
-             :login => config['login'],
-             :password => config['password']
-           )
+
+def github_info(github_client, repo_name)
+  latest_release = github_client.latest_release(repo_name)
+  tags = github_client.tags(repo_name)
+  latest_release_tag = tags.find {|i| i[:name] == latest_release.name }
+  latest_tag = tags[0]
+  commits = github_client.commits(repo_name)
+  master_sha = commits[0][:sha][0...7]
+  release_sha = latest_release_tag[:commit][:sha][0...7]
+  tag_sha = latest_tag[:commit][:sha][0...7]
+
+  return latest_release, latest_tag, master_sha, release_sha, tag_sha
+end
+
+
+def aws_info(s3_client, s3_location)
+  bucket_name = s3_location.split('/')[0]
+  directory = s3_location[bucket_name.length+1..-1] + '/'
+  dirs = s3_client.list_objects(bucket: bucket_name, prefix: directory, delimiter:'/').common_prefixes
+  dirs = dirs.sort_by(&:prefix).reverse!
+  if dirs.empty?
+    last_deploy = ''
+  else
+    last_deploy = dirs[0][:prefix].split('/')[-1]
+  end
+
+  return last_deploy
+end
+
+
+SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
+  github_client = Octokit::Client.new(
+                    :login => GITHUB_CONFIG['login'],
+                    :password => GITHUB_CONFIG['password']
+                  )
+  s3_client = Aws::S3::Client.new(region: AWS_CONFIG['region'])
+
   rows = []
   odd_row = true
 
-  config['repositories'].each do |name|
-    latest_release = client.latest_release(name)
-    tags = client.tags(name)
-    latest_release_tag = tags.find {|i| i[:name] == latest_release.tag_name }
-    latest_tag = tags[0]
-    row_class = odd_row ? 'odd-row' : 'even-row'
-    master_sha = client.commits(name)[0][:sha][0...7]
-    release_sha = latest_release_tag[:commit][:sha][0...7]
-    tag_sha = latest_tag[:commit][:sha][0...7]
-    odd_row = !odd_row
+  CONFIG['components'].each do |component|
+    repo_name = component['repo_name']
+    latest_release, latest_tag, master_sha, release_sha, tag_sha = github_info(github_client, repo_name)
 
+    if component.has_key?('s3_location')
+      s3_location = component['s3_location']
+      last_deploy = aws_info(s3_client, s3_location)
+    else
+      last_deploy = ''
+    end
+
+    row_class = odd_row ? 'odd-row' : 'even-row'
+    odd_row = !odd_row
     rows.concat(
       [
         {
@@ -53,7 +95,7 @@ SCHEDULER.every '1m', :first_in => 0 do |job|
             {
               colspan: 1,
               rowspan: 1,
-              value: name.split('/')[1]
+              value: repo_name.split('/')[1]
             },
             {
               colspan: 1,
@@ -64,6 +106,12 @@ SCHEDULER.every '1m', :first_in => 0 do |job|
               colspan: 1,
               rowspan: 1,
               value: latest_tag.name
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
+              value: last_deploy,
+              class: (last_deploy!=latest_release.tag_name) && (not last_deploy.empty?) ? 'brag-cell-amber' : ''
             }
           ]
         },
@@ -96,8 +144,8 @@ SCHEDULER.every '1m', :first_in => 0 do |job|
   if last_rows != rows
     last_rows = rows
     send_event('github_releases_and_tags', {
-      title: 'Copyrigt Hub Releases And Tags',
-      hrows: headers,
+      title: 'Copyright Hub Releases And Tags',
+      hrows: HEADERS,
       rows: rows
     })
   end
