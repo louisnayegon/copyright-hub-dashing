@@ -111,7 +111,7 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
               colspan: 1,
               rowspan: 1,
               value: last_deploy,
-              class: (last_deploy!=latest_release.tag_name) && (not last_deploy.empty?) ? 'brag-cell-amber' : ''
+              class: (last_deploy!=latest_release.tag_name) && (not last_deploy.empty?) ? 'brag-cell-amber' : row_class
             }
           ]
         },
@@ -127,13 +127,18 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
               colspan: 1,
               rowspan: 1,
               value: release_sha,
-              class: master_sha!=release_sha ? 'brag-cell-amber' : ''
+              class: master_sha!=release_sha ? 'brag-cell-amber' : row_class
             },
             {
               colspan: 1,
               rowspan: 1,
               value: tag_sha,
-              class: master_sha!=tag_sha ? 'brag-cell-amber' : ''
+              class: master_sha!=tag_sha ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
+              value: ''
             }
           ]
         }
@@ -144,7 +149,7 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
   if last_rows != rows
     last_rows = rows
     send_event('github_releases_and_tags', {
-      title: 'Copyright Hub Releases And Tags',
+      title: 'Copyright Hub Releases, Tags And Deployments',
       hrows: HEADERS,
       rows: rows
     })
