@@ -3,9 +3,10 @@ Check out http://shopify.github.com/dashing for more information.
 Edit the github.yml file with your github login name and oauth password
 
 How to run the service
-```
-bundle install
-dashing start
+
+```bash
+bundle install --path .bundle
+bundle exec dashing start
 ```
 
 You should be able to access the dashboard at

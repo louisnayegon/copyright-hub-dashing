@@ -1,26 +1,40 @@
 components:
   - repo_name: CDECatapult/copyright-hub-accounts-srv
     s3_location: copyrighthub-artifacts/services/accounts
+    url_prod: https://acc.copyrighthub.org
+    url_stage: https://acc-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-authentication-srv
     s3_location: copyrighthub-artifacts/services/authentication
+    url_prod: https://auth.copyrighthub.org
+    url_stage: https://auth-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-identity-srv
     s3_location: copyrighthub-artifacts/services/identity
+    url_prod: https://id.copyrighthub.org
+    url_stage: https://id-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-index-srv
     s3_location: copyrighthub-artifacts/services/index
+    url_prod: https://index.copyrighthub.org
+    url_stage: https://index-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-onboarding-srv
     s3_location: copyrighthub-artifacts/services/onboarding
+    url_prod: https://on.copyrighthub.org
+    url_stage: https://on-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-query-srv
     s3_location: copyrighthub-artifacts/services/query
+    url_prod: https://query.copyrighthub.org
+    url_stage: https://query-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-repository-srv
     s3_location: copyrighthub-artifacts/services/repository
+    url_prod: https://repo.copyrighthub.org
+    url_stage: https://repo-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-resolution-srv
     s3_location: copyrighthub-artifacts/services/resolution
   - repo_name: CDECatapult/copyright-hub-template-srv
     s3_location: copyrighthub-artifacts/services/template
   - repo_name: CDECatapult/copyright-hub-transformation-srv
     s3_location: copyrighthub-artifacts/services/transformation
-  - repo_name: CDECatapult/copyright-hub-docroot
-    s3_location: copyrighthub-artifacts/documents/docroot
+    url_prod: https://tran.copyrighthub.org
+    url_stage: https://tran-stage.copyrighthub.org
   - repo_name: CDECatapult/copyright-hub-support-docs
     s3_location: copyrighthub-artifacts/documents/support
   - repo_name: CDECatapult/copyright-hub-api

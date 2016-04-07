@@ -1,6 +1,7 @@
 require 'octokit'
 require 'aws-sdk'
 require 'json'
+require 'curb'
 
 CONFIG          = YAML::load_file('github.yml')
 GITHUB_CONFIG   = CONFIG['github']
@@ -8,7 +9,6 @@ AWS_CONFIG      = CONFIG['aws']
 MANIFEST_CONFIG = CONFIG['manifest']
 
 SERVICE_TO_PART = {
-  'repository' => 'repository1'
 }
 
 HEADERS = [
@@ -32,6 +32,11 @@ HEADERS = [
       {
         colspan: 1,
         rowspan: 1,
+        value: 'Stage'
+      },
+      {
+        colspan: 1,
+        rowspan: 1,
         value: 'Last Deploy'
       },
       {
@@ -49,7 +54,7 @@ last_rows = []
 def github_info(github_client, repo_name)
   latest_release = github_client.latest_release(repo_name)
   tags = github_client.tags(repo_name)
-  latest_release_tag = tags.find {|i| i[:name] == latest_release.name }
+  latest_release_tag = tags.find {|i| i[:name] == latest_release.tag_name }
   latest_tag = tags[0]
   commits = github_client.commits(repo_name)
   master_sha = commits[0][:sha][0...7]
@@ -72,6 +77,22 @@ def aws_info(s3_client, s3_location)
   end
 
   return last_deploy
+end
+
+
+def service_info(url)
+  cu = Curl::Easy.new(url)
+  cu.follow_location = true
+  cu.http_get()
+  response = JSON.parse(cu.body_str)
+  ret = ''
+  if response.has_key?('data')
+    data = response['data']
+    if data.has_key?('version')
+      ret = data['version']
+    end
+  end
+  return ret
 end
 
 
@@ -100,6 +121,12 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
     s3_location = component['s3_location']
     location_split = s3_location.split('/')
     last_deploy = aws_info(s3_client, s3_location)
+
+    stage_version = ''
+    if component.has_key?('url_stage')
+      url = component['url_stage']
+      stage_version = service_info(url)
+    end
 
     manifest_version = ''
 
@@ -136,6 +163,12 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
             {
               colspan: 1,
               rowspan: 1,
+              value: stage_version,
+              class: (stage_version!=latest_release.tag_name) && (not stage_version.empty?) ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
               value: last_deploy,
               class: (last_deploy!=latest_release.tag_name) && (not last_deploy.empty?) ? 'brag-cell-amber' : row_class
             },
@@ -166,6 +199,11 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
               rowspan: 1,
               value: tag_sha,
               class: master_sha!=tag_sha ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
+              value: ''
             },
             {
               colspan: 1,
