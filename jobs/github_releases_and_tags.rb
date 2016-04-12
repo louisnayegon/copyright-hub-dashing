@@ -3,53 +3,53 @@ require 'aws-sdk'
 require 'json'
 require 'curb'
 
-CONFIG          = YAML::load_file('github.yml')
-GITHUB_CONFIG   = CONFIG['github']
-AWS_CONFIG      = CONFIG['aws']
-MANIFEST_CONFIG = CONFIG['manifest']
-
-SERVICE_TO_PART = {
-}
-
-HEADERS = [
-  {
-    cols: [
+class GithubReleasesAndTags
+  attr_reader :CONFIG, :HEADERS, :last_rows
+  attr_writer :last_rows
+  def initialize()
+    @CONFIG          = YAML::load_file('github.yml')
+    @HEADERS = [
       {
-        colspan: 1,
-        rowspan: 1,
-        value: 'Repository Name'
-      },
-      {
-        colspan: 1,
-        rowspan: 1,
-        value: 'Last Release'
-      },
-      {
-        colspan: 1,
-        rowspan: 1,
-        value: 'Last Tag'
-      },
-      {
-        colspan: 1,
-        rowspan: 1,
-        value: 'Stage'
-      },
-      {
-        colspan: 1,
-        rowspan: 1,
-        value: 'Last Deploy'
-      },
-      {
-        colspan: 1,
-        rowspan: 1,
-        value: 'Manifest'
+        cols: [
+          {
+            colspan: 1,
+            rowspan: 1,
+            value: 'Repository Name'
+          },
+          {
+            colspan: 1,
+            rowspan: 1,
+            value: 'Last Release'
+          },
+          {
+            colspan: 1,
+            rowspan: 1,
+            value: 'Last Tag'
+          },
+          {
+            colspan: 1,
+            rowspan: 1,
+            value: 'Stage'
+          },
+          {
+            colspan: 1,
+            rowspan: 1,
+            value: 'Last Deploy'
+          },
+          {
+            colspan: 1,
+            rowspan: 1,
+            value: 'Manifest'
+          }
+        ]
       }
     ]
-  }
-]
 
-last_rows = []
+    last_rows = []
+  end
+end
 
+releases_and_tags = GithubReleasesAndTags.new
 
 def github_info(github_client, repo_name)
   latest_release = github_client.latest_release(repo_name)
@@ -102,19 +102,19 @@ def read_manifest(github_client, repo_name, file_name)
 end
 
 
-SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
+SCHEDULER.every releases_and_tags.CONFIG['refresh'], :first_in => 0 do |job|
   github_client = Octokit::Client.new(
-                    :login => GITHUB_CONFIG['login'],
-                    :password => GITHUB_CONFIG['password']
+                    :login => releases_and_tags.CONFIG['github']['login'],
+                    :password => releases_and_tags.CONFIG['github']['password']
                   )
-  s3_client = Aws::S3::Client.new(region: AWS_CONFIG['region'])
+  s3_client = Aws::S3::Client.new(region: releases_and_tags.CONFIG['aws']['region'])
 
   rows = []
   odd_row = true
 
-  manifest = read_manifest(github_client, MANIFEST_CONFIG['repo_name'], MANIFEST_CONFIG['file_name'])
+  manifest = read_manifest(github_client, releases_and_tags.CONFIG['manifest']['repo_name'], releases_and_tags.CONFIG['manifest']['file_name'])
 
-  CONFIG['components'].each do |component|
+  releases_and_tags.CONFIG['components'].each do |component|
     repo_name = component['repo_name']
     latest_release, latest_tag, master_sha, release_sha, tag_sha = github_info(github_client, repo_name)
 
@@ -131,9 +131,6 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
     manifest_version = ''
 
     part = location_split[2]
-    if SERVICE_TO_PART.has_key?(part)
-      part = SERVICE_TO_PART[part]
-    end
     if manifest.key?(location_split[1])
       manifest_version = manifest[location_split[1]][part]['version']
     end
@@ -176,7 +173,7 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
               colspan: 1,
               rowspan: 1,
               value: manifest_version,
-              class: ((manifest_version!=latest_release.tag_name) && (repo_name!=MANIFEST_CONFIG['repo_name'])) ? 'brag-cell-amber' : row_class
+              class: ((manifest_version!=latest_release.tag_name) && (repo_name!=releases_and_tags.CONFIG['manifest']['repo_name'])) ? 'brag-cell-amber' : row_class
             }
           ]
         },
@@ -221,11 +218,11 @@ SCHEDULER.every CONFIG['refresh'], :first_in => 0 do |job|
     )
   end
 
-  if last_rows != rows
-    last_rows = rows
+  if releases_and_tags.last_rows != rows
+    releases_and_tags.last_rows = rows
     send_event('github_releases_and_tags', {
       title: 'Copyright Hub Releases, Tags And Deployments',
-      hrows: HEADERS,
+      hrows: releases_and_tags.HEADERS,
       rows: rows
     })
   end

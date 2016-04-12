@@ -46,6 +46,16 @@ manifest:
   repo_name: CDECatapult/copyright-hub-manifest
   file_name: manifest.json
 
+data_services:
+  - name: Blazegraph (Index)
+    url_stage: http://ec2-52-49-144-64.eu-west-1.compute.amazonaws.com:8080/bigdata
+  - name: Blazegraph (Repository)
+    url_stage: http://ec2-52-50-239-239.eu-west-1.compute.amazonaws.com:8080/bigdata
+  - name: CouchDB
+    url_stage: http://ec2-52-50-237-25.eu-west-1.compute.amazonaws.com:5984/
+  - name: Karma
+    url_stage: http://ec2-52-18-159-208.eu-west-1.compute.amazonaws.com:9999
+
 refresh: 5m
 
 github:
