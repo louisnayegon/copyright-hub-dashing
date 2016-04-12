@@ -83,9 +83,9 @@ end
 def service_info(url)
   cu = Curl::Easy.new(url)
   cu.follow_location = true
-  cu.http_get()
-  response = JSON.parse(cu.body_str)
   ret = ''
+  cu.http_get() rescue return ret
+  response = JSON.parse(cu.body_str)
   if response.has_key?('data')
     data = response['data']
     if data.has_key?('version')
