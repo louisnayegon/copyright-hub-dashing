@@ -61,7 +61,7 @@ SCHEDULER.every data_services.CONFIG['refresh'], :first_in => 0 do |job|
         state_stage = 'ACTIVE'
         class_stage = row_class
       else
-        state_stage = 'UNDEFINED'
+        state_stage = 'INACTIVE'
         class_stage = 'brag-cell-red'
       end
     end
@@ -74,7 +74,7 @@ SCHEDULER.every data_services.CONFIG['refresh'], :first_in => 0 do |job|
         state_prod = 'ACTIVE'
         class_prod = row_class
       else
-        state_prod = 'UNDEFINED'
+        state_prod = 'INACTIVE'
         class_prod = 'brag-cell-red'
       end
     end

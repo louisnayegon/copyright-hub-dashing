@@ -34,6 +34,11 @@ class GithubReleasesAndTags
           {
             colspan: 1,
             rowspan: 1,
+            value: 'Production'
+          },
+          {
+            colspan: 1,
+            rowspan: 1,
             value: 'Last Deploy'
           },
           {
@@ -128,6 +133,12 @@ SCHEDULER.every releases_and_tags.CONFIG['refresh'], :first_in => 0 do |job|
       stage_version = service_info(url)
     end
 
+    production_version = ''
+    if component.has_key?('url_prod')
+      url = component['url_prod']
+      production_version = service_info(url)
+    end
+
     manifest_version = ''
 
     part = location_split[2]
@@ -166,6 +177,12 @@ SCHEDULER.every releases_and_tags.CONFIG['refresh'], :first_in => 0 do |job|
             {
               colspan: 1,
               rowspan: 1,
+              value: production_version,
+              class: (production_version!=latest_release.tag_name) && (not production_version.empty?) ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
               value: last_deploy,
               class: (last_deploy!=latest_release.tag_name) && (not last_deploy.empty?) ? 'brag-cell-amber' : row_class
             },
@@ -196,6 +213,11 @@ SCHEDULER.every releases_and_tags.CONFIG['refresh'], :first_in => 0 do |job|
               rowspan: 1,
               value: tag_sha,
               class: master_sha!=tag_sha ? 'brag-cell-amber' : row_class
+            },
+            {
+              colspan: 1,
+              rowspan: 1,
+              value: ''
             },
             {
               colspan: 1,
