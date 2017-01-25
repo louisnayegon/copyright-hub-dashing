@@ -112,7 +112,10 @@ SCHEDULER.every releases_and_tags.CONFIG['refresh'], :first_in => 0 do |job|
                     :login => releases_and_tags.CONFIG['github']['login'],
                     :password => releases_and_tags.CONFIG['github']['password']
                   )
-  s3_client = Aws::S3::Client.new(region: releases_and_tags.CONFIG['aws']['region'])
+  s3_client = Aws::S3::Client.new(
+                region: releases_and_tags.CONFIG['aws']['region'],
+                credentials: Aws::SharedCredentials.new(profile_name: releases_and_tags.CONFIG['aws']['profile'])
+              )
 
   rows = []
   odd_row = true

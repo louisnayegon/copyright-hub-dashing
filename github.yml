@@ -1,49 +1,49 @@
 components:
   - repo_name: openpermissions/accounts-srv
-    s3_location: copyrighthub-artifacts/services/accounts
+    s3_location: opp-build-artifacts/services/accounts
     url_prod: https://acc.copyrighthub.org/v1/accounts
     url_stage: https://stage.copyrighthub.org/v1/accounts
   - repo_name: openpermissions/auth-srv
-    s3_location: copyrighthub-artifacts/services/auth
+    s3_location: opp-build-artifacts/services/auth
     url_prod: https://auth.copyrighthub.org/v1/auth
     url_stage: https://stage.copyrighthub.org/v1/auth
   - repo_name: openpermissions/identity-srv
-    s3_location: copyrighthub-artifacts/services/identity
+    s3_location: opp-build-artifacts/services/identity
     url_prod: https://id.copyrighthub.org/v1/identity
     url_stage: https://stage.copyrighthub.org/v1/identity
   - repo_name: openpermissions/index-srv
-    s3_location: copyrighthub-artifacts/services/index
+    s3_location: opp-build-artifacts/services/index
     url_prod: https://index.copyrighthub.org/v1/index
     url_stage: https://stage.copyrighthub.org/v1/index
   - repo_name: openpermissions/onboarding-srv
-    s3_location: copyrighthub-artifacts/services/onboarding
+    s3_location: opp-build-artifacts/services/onboarding
     url_prod: https://on.copyrighthub.org/v1/onboarding
     url_stage: https://stage.copyrighthub.org/v1/onboarding
   - repo_name: openpermissions/query-srv
-    s3_location: copyrighthub-artifacts/services/query
+    s3_location: opp-build-artifacts/services/query
     url_prod: https://query.copyrighthub.org/v1/query
     url_stage: https://stage.copyrighthub.org/v1/query
   - repo_name: openpermissions/repository-srv
-    s3_location: copyrighthub-artifacts/services/repository
+    s3_location: opp-build-artifacts/services/repository
     url_prod: https://repo.copyrighthub.org/v1/repository
     url_stage: https://stage.copyrighthub.org/v1/repository
   - repo_name: openpermissions/resolution-srv
-    s3_location: copyrighthub-artifacts/services/resolution
+    s3_location: opp-build-artifacts/services/resolution
   - repo_name: openpermissions/template-srv
-    s3_location: copyrighthub-artifacts/services/template
+    s3_location: opp-build-artifacts/services/template
   - repo_name: openpermissions/transformation-srv
-    s3_location: copyrighthub-artifacts/services/transformation
+    s3_location: opp-build-artifacts/services/transformation
     url_prod: https://tran.copyrighthub.org/v1/transformation
     url_stage: https://stage.copyrighthub.org/v1/transformation
   - repo_name: openpermissions/support-docs
-    s3_location: copyrighthub-artifacts/documents/support
+    s3_location: opp-build-artifacts/documents/support
   - repo_name: openpermissions/api-test-suite
-    s3_location: copyrighthub-artifacts/tests/api
-  - repo_name: CDECatapult/copyright-hub-manifest
-    s3_location: copyrighthub-artifacts/platform
+    s3_location: opp-build-artifacts/tests/api
+  - repo_name: copyrighthub/copyright-hub-manifest
+    s3_location: opp-build-artifacts/platform
 
 manifest:
-  repo_name: CDECatapult/copyright-hub-manifest
+  repo_name: copyrighthub/copyright-hub-manifest
   file_name: manifest.json
 
 data_services:
@@ -68,3 +68,4 @@ github:
 
 aws:
   region: eu-west-1
+  profile: copyrighthub
