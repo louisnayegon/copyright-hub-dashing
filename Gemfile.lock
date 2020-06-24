@@ -946,7 +946,7 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     public_suffix (4.0.2)
-    rack (2.0.8)
+    rack (2.1.4)
     rack-protection (2.0.8.1)
       rack
     rb-fsevent (0.10.3)
