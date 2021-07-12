@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     aws-eventstream (1.0.3)
     aws-partitions (1.261.0)
@@ -945,7 +945,7 @@ GEM
     octokit (4.15.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    public_suffix (4.0.2)
+    public_suffix (4.0.6)
     rack (2.0.8)
     rack-protection (2.0.8.1)
       rack
